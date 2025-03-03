@@ -1,187 +1,231 @@
-# Goku Autonomous Robot with ROS 2 Jazzy
+Below is a customized README tailored to your specific robot setup, which I’ll call **"Skippy"** (a playful nod to its mobility and your preference to "skip" Micro-ROS). This README reflects your hardware (Raspberry Pi 5 with ROS2, STM32F4 for motor control, BLDC motors with encoders, and sensors on the Pi), incorporates `ros2_control`, and aligns with the differential drive configuration we’ve discussed. I’ve streamlined it for clarity and relevance to your project.
 
-This project implements an all-terrain robot with smooth PWM control for four motors, leveraging ROS 2 Jazzy Jalisco, a Raspberry Pi 5, an STM32F4 microcontroller, and Gazebo Harmonic for simulation. The robot uses precise PWM ramping to ensure smooth acceleration and deceleration, suitable for indoor navigation over varied surfaces.
+---
+
+```markdown
+# Skippy: Autonomous Mobile Robot with ROS2
+
+**Skippy** is a differential-drive autonomous robot built for indoor navigation, powered by ROS2 Humble on a Raspberry Pi 5 and real-time motor control on an STM32F4. It features BLDC motors with encoders for precise odometry, alongside LiDAR, IMU, and camera sensors for mapping and perception. The robot uses the `ros2_control` framework for seamless integration with ROS2 navigation stacks.
+
+---
 
 ## Features
-
-- **Hardware**: Raspberry Pi 5 (ROS 2 host) + STM32F4 (PWM control)
-- **Control**: 4 PWM channels for a four-wheeled robot (e.g., skid-steer or mecanum)
-- **Simulation**: Gazebo Harmonic with an indoor environment
+- **Hardware**:
+  - Raspberry Pi 5: ROS2 host, sensor processing (LiDAR, IMU, camera).
+  - STM32F4: BLDC motor control and encoder feedback via SPI.
+  - 2 BLDC motors with built-in encoders (differential drive).
+- **Control**: Velocity-based control using `diff_drive_controller` in `ros2_control`.
+- **Sensors**: LiDAR (e.g., RPLIDAR), IMU (e.g., MPU6050), and camera (e.g., USB or CSI) on the Pi.
+- **ROS2 Distro**: Humble Hawksbill (2022).
 - **Enhancements**:
-  - PID control for velocity stabilization
-  - Diagnostics node for real-time motor and system monitoring
-  - Teleop script for manual control
-- **ROS 2 Distro**: Jazzy Jalisco (May 2024)
+  - Odometry fusion (encoders + IMU).
+  - Teleoperation script for manual control.
+  - Diagnostics for motor status monitoring.
+
+---
 
 ## Prerequisites
+### Hardware
+- Raspberry Pi 5 (Ubuntu 22.04 LTS).
+- STM32F4 (e.g., STM32F407VG Discovery).
+- 2 BLDC motors with encoders and compatible driver (e.g., ESC or custom H-bridge).
+- SPI connection (Pi GPIO 10/11/9 to STM32 PA5/PA7/PA4).
+- Sensors: LiDAR (USB/UART), IMU (I2C/SPI), camera (USB/CSI).
 
-- **Hardware**:
-  - Raspberry Pi 5 (Ubuntu 24.04 Noble)
-  - STM32F4 (e.g., STM32F407 Discovery)
-  - Motor driver (e.g., L298N) and 4 DC motors
-  - UART connection (Pi GPIO 14/15 to STM32 PA2/PA3)
-- **Software**:
-  - ROS 2 Jazzy (`sudo apt install ros-jazzy-desktop`)
-  - Gazebo Harmonic (`sudo apt install ros-jazzy-ros-gz`)
-  - STM32CubeIDE
-  - Python dependencies: `pip install pyserial`
-- **Tools**: Git, CMake, colcon
+### Software
+- ROS2 Humble: `sudo apt install ros-humble-desktop`.
+- `ros2_control` and controllers: `sudo apt install ros-humble-ros2-control ros-humble-ros2-controllers`.
+- STM32CubeIDE for firmware development.
+- Python dependencies: `pip install spidev`.
+
+### Tools
+- Git, CMake, `colcon` for building ROS2 packages.
+
+---
 
 ## Project Structure
+```
+skippy_robot/
+├── config/                   # Configuration files (e.g., robot_control.yaml)
+├── launch/                   # Launch files (e.g., robot_control.launch.py)
+├── src/                      # Source code
+│   ├── stm32f4_hardware_interface.cpp  # Custom ros2_control hardware interface
+│   ├── teleop.py             # Teleoperation script
+│   └── diagnostics.py        # Diagnostics node
+├── README.md                 # This file
+└── package.xml               # ROS2 package manifest
+```
 
-```
-all_terrain_robot/
-├── launch/               # ROS 2 launch files
-├── src/                  # Source code
-│   ├── pwm_controller.py # ROS 2 node for PWM commands
-│   ├── teleop.py         # Teleop script
-│   ├── diagnostics.py    # Diagnostics node
-│   └── stm32/            # STM32 firmware
-├── urdf/                 # Robot URDF
-├── worlds/               # Gazebo world files
-├── README.md
-└── package.xml           # ROS 2 package manifest
-```
+---
 
 ## Setup Instructions
-
 ### 1. Raspberry Pi 5 Setup
-
-1. Install Ubuntu 24.04 and ROS 2 Jazzy (see [ROS 2 docs](https://docs.ros.org/en/jazzy/)).
-2. Enable UART:
-   - Edit `/boot/firmware/config.txt`:
-     ```
-     enable_uart=1
-     dtoverlay=disable-bt
-     ```
-   - Reboot.
-3. Clone this repo:
-   ```
-   git clone <repo-url> ~/ros2_ws/src/all_terrain_robot
+1. Install Ubuntu 22.04 and ROS2 Humble (see [ROS2 docs](https://docs.ros.org/en/humble/Installation.html)).
+2. Enable SPI:
+   - Edit `/boot/firmware/config.txt`: Add `dtparam=spi=on`.
+   - Reboot: `sudo reboot`.
+3. Clone and build:
+   ```bash
+   git clone <repo-url> ~/ros2_ws/src/skippy_robot
    cd ~/ros2_ws
    colcon build
    source install/setup.bash
    ```
 
 ### 2. STM32F4 Firmware
-
-1. Open STM32CubeIDE and create a new project for your STM32F4 board.
+1. Open STM32CubeIDE and create a project for your STM32F4.
 2. Configure:
-   - **TIM1**: PWM on CH1 (PA8), CH2 (PA9), 1 kHz, ARR = 1000
-   - **TIM2**: PWM on CH1 (PB3), CH2 (PB10), 1 kHz, ARR = 1000
-   - **USART2**: 115200 baud, PA2-TX, PA3-RX
-   - **GPIO**: PA0–PA3 for motor direction
-3. Copy `stm32/main.c` from this repo into your project.
+   - SPI1: PA5 (SCK), PA7 (MOSI), PA6 (MISO), PA4 (CS), slave mode.
+   - TIM2/TIM3: Encoder mode for left/right motor encoders.
+   - PWM: TIM1 CH1/CH2 for BLDC motor control (e.g., PA8/PA9).
+3. Implement SPI communication (see example below).
 4. Build and flash the firmware.
 
 ### 3. Hardware Connections
-
-- **UART**: Pi GPIO 14 (TX) → STM32 PA3 (RX), Pi GPIO 15 (RX) → STM32 PA2 (TX), common ground
+- **SPI**: Pi GPIO 10 (MOSI) → STM32 PA7, GPIO 11 (SCK) → PA5, GPIO 9 (MISO) → PA6, GPIO 8 (CS) → PA4, common ground.
 - **Motors**:
-  - Front Left: TIM1 CH1 (PA8), direction PA0
-  - Front Right: TIM1 CH2 (PA9), direction PA1
-  - Rear Left: TIM2 CH1 (PB3), direction PA2
-  - Rear Right: TIM2 CH2 (PB10), direction PA3
-- **Power**: Separate supply for motors (e.g., 12V); 3.3V for STM32 if needed
+  - Left: TIM1 CH1 (PA8) to motor driver, encoder to TIM2.
+  - Right: TIM1 CH2 (PA9) to motor driver, encoder to TIM3.
+- **Power**: 5V/3.3V for Pi/STM32, separate supply (e.g., 12V) for motors.
 
-### 4. Simulation Setup
+### 4. ROS2 Control Setup
+- Configuration: See `config/robot_control.yaml`.
+- Launch: `ros2 launch skippy_robot robot_control.launch.py`.
 
-1. Ensure Gazebo Harmonic is installed.
-2. Launch the simulation:
-   ```
-   ros2 launch all_terrain_robot launch_sim.py
-   ```
+---
 
-## Enhancements
-
-### PID Control
-
-Added to the STM32 firmware for velocity stabilization:
-
+## STM32F4 Firmware Example
 ```c
-// In stm32/main.c
-float kp = 0.5, ki = 0.1, kd = 0.05; // PID gains
-int error[4] = {0}, integral[4] = {0}, last_error[4] = {0};
+#include "stm32f4xx_hal.h"
 
-void update_pwm(void) {
-    for (int i = 0; i < 4; i++) {
-        error[i] = pwm_target[i] - pwm_current[i];
-        integral[i] += error[i];
-        int derivative = error[i] - last_error[i];
-        int pid_output = kp * error[i] + ki * integral[i] + kd * derivative;
+SPI_HandleTypeDef hspi1;
+TIM_HandleTypeDef htim1, htim2, htim3;
 
-        pwm_current[i] += (pid_output > RAMP_STEP) ? RAMP_STEP : (pid_output < -RAMP_STEP) ? -RAMP_STEP : pid_output;
-        pwm_current[i] = (pwm_current[i] > PWM_MAX) ? PWM_MAX : (pwm_current[i] < -PWM_MAX) ? -PWM_MAX : pwm_current[i];
-        last_error[i] = error[i];
+void spi_handler() {
+  uint8_t rx_buffer[8], tx_buffer[16];
+  if (HAL_SPI_Receive(&hspi1, rx_buffer, 8, 100) == HAL_OK && rx_buffer[0] == 0xAA) {
+    uint8_t mode = rx_buffer[1];
+    int16_t left_vel = (rx_buffer[2] << 8) | rx_buffer[3];
+    int16_t right_vel = (rx_buffer[4] << 8) | rx_buffer[5];
+    if (mode == 1) {
+      HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_1); // Left motor
+      __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_1, left_vel);
+      HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_2); // Right motor
+      __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_2, right_vel);
     }
-    // Set PWM and direction as before
+  }
+  // Send encoder data
+  int32_t left_enc = __HAL_TIM_GET_COUNTER(&htim2);
+  int32_t right_enc = __HAL_TIM_GET_COUNTER(&htim3);
+  int16_t left_vel = compute_velocity(left_enc); // Custom function
+  int16_t right_vel = compute_velocity(right_enc);
+  tx_buffer[0] = 0xBB;
+  memcpy(tx_buffer + 1, &left_enc, 4);
+  memcpy(tx_buffer + 5, &right_enc, 4);
+  memcpy(tx_buffer + 9, &left_vel, 2);
+  memcpy(tx_buffer + 11, &right_vel, 2);
+  tx_buffer[15] = 0xXX; // Checksum (simplified)
+  HAL_SPI_Transmit(&hspi1, tx_buffer, 16, 100);
+}
+
+int main() {
+  // HAL init, SPI/TIM setup (generated by STM32CubeIDE)
+  while (1) {
+    spi_handler();
+  }
 }
 ```
 
-- **Tuning**: Adjust `kp`, `ki`, `kd` based on motor response (start with small values).
+---
 
-### Diagnostics Node
+## ROS2 Control Configuration
+### `config/robot_control.yaml`
+```yaml
+controller_manager:
+  ros__parameters:
+    update_rate: 100
+    diff_drive_controller:
+      type: diff_drive_controller/DiffDriveController
 
-Monitors motor PWM and system status:
+stm32f4_hardware:
+  ros__parameters:
+    joints:
+      - left_wheel
+      - right_wheel
+    wheel_separation: 0.4  # Adjust to your robot
+    wheel_radius: 0.08    # Adjust to your robot
+    encoder_resolution: 4000  # Adjust to your encoders
 
-```python
-# src/diagnostics.py
-import rclpy
-from rclpy.node import Node
-from diagnostic_msgs.msg import DiagnosticArray, DiagnosticStatus, KeyValue
-
-class Diagnostics(Node):
-    def __init__(self):
-        super().__init__('diagnostics')
-        self.pub = self.create_publisher(DiagnosticArray, '/diagnostics', 10)
-        self.timer = self.create_timer(1.0, self.publish_diagnostics)
-        self.pwm_values = [0] * 4
-
-    def update_pwm(self, pwm):
-        self.pwm_values = pwm
-
-    def publish_diagnostics(self):
-        msg = DiagnosticArray()
-        status = DiagnosticStatus(name='Motor Control', level=DiagnosticStatus.OK, message='Running')
-        for i, pwm in enumerate(self.pwm_values):
-            status.values.append(KeyValue(key=f'Motor {i}', value=str(pwm)))
-        msg.status.append(status)
-        self.pub.publish(msg)
-
-def main():
-    rclpy.init()
-    node = Diagnostics()
-    rclpy.spin(node)
+diff_drive_controller:
+  ros__parameters:
+    left_wheel: "left_wheel"
+    right_wheel: "right_wheel"
+    wheel_separation: 0.4
+    wheel_radius: 0.08
+    publish_rate: 50.0
+    base_frame_id: "base_link"
+    odom_frame_id: "odom"
 ```
 
-- Add to launch file:
-  ```python
-  Node(package='all_terrain_robot', executable='diagnostics.py', output='screen')
-  ```
+### `launch/robot_control.launch.py`
+```python
+from launch import LaunchDescription
+from launch_ros.actions import Node
 
-### Teleop Script
+def generate_launch_description():
+    return LaunchDescription([
+        Node(
+            package="controller_manager",
+            executable="ros2_control_node",
+            parameters=["/path/to/skippy_robot/config/robot_control.yaml"],
+            output="screen",
+        ),
+        Node(
+            package="controller_manager",
+            executable="spawner",
+            arguments=["diff_drive_controller"],
+            output="screen",
+        ),
+    ])
+```
 
-For manual control:
+---
 
+## Usage
+1. **Launch Control**:
+   ```bash
+   ros2 launch skippy_robot robot_control.launch.py
+   ```
+2. **Teleoperation**:
+   ```bash
+   ros2 run skippy_robot teleop.py
+   ```
+3. **Monitor Diagnostics**:
+   ```bash
+   ros2 topic echo /diagnostics
+   ```
+
+---
+
+## Teleoperation Example
 ```python
 # src/teleop.py
 import rclpy
 from rclpy.node import Node
 from geometry_msgs.msg import Twist
-import sys, select, termios, tty
+import sys, select, tty, termios
 
 class Teleop(Node):
     def __init__(self):
         super().__init__('teleop')
         self.pub = self.create_publisher(Twist, '/cmd_vel', 10)
         self.settings = termios.tcgetattr(sys.stdin)
-        self.speed = 0.5
-        self.turn = 1.0
+        self.speed = 0.5  # m/s
+        self.turn = 1.0   # rad/s
 
     def get_key(self):
         tty.setraw(sys.stdin.fileno())
-        rlist, _, _ = select.select([sys.stdin], [], [], 0.1)
-        key = sys.stdin.read(1) if rlist else ''
+        key = sys.stdin.read(1) if select.select([sys.stdin], [], [], 0.1)[0] else ''
         termios.tcsetattr(sys.stdin, termios.TCSADRAIN, self.settings)
         return key
 
@@ -199,46 +243,43 @@ class Teleop(Node):
 
 def main():
     rclpy.init()
-    node = Teleop()
-    node.run()
-    node.destroy_node()
+    Teleop().run()
     rclpy.shutdown()
 ```
 
-- Run: `ros2 run all_terrain_robot teleop.py`
-
-## Usage
-
-- **Simulation**: 
-  ```
-  ros2 launch all_terrain_robot launch_sim.py
-  ```
-- **Hardware**:
-  1. Start PWM controller:
-     ```
-     ros2 run all_terrain_robot pwm_controller.py
-     ```
-  2. Test with teleop:
-     ```
-     ros2 run all_terrain_robot teleop.py
-     ```
-  3. Monitor:
-     ```
-     ros2 topic echo /diagnostics
-     ```
+---
 
 ## Tuning
+- **Wheel Parameters**: Adjust `wheel_separation` and `wheel_radius` in `robot_control.yaml`.
+- **Encoder Resolution**: Match `encoder_resolution` to your BLDC motor encoders.
+- **PWM Scaling**: Map velocity commands (e.g., 0–1000) to your motor driver’s range in STM32 firmware.
 
-- **PWM Ramping**: Adjust `RAMP_STEP` (5–20) and `RAMP_DELAY_MS` (10–50) in `stm32/main.c`
-- **PID**: Tune `kp`, `ki`, `kd` for stable velocity
-- **Kinematics**: Modify `wheelbase` and `track_width` in `pwm_controller.py`
+---
 
 ## Future Enhancements
+- Add PID control on STM32F4 for velocity stabilization.
+- Integrate IMU data into `diff_drive_controller` for better odometry.
+- Support for SLAM (e.g., Cartographer) with LiDAR.
 
-- Add IMU feedback for tilt compensation
-- Implement mecanum wheel kinematics
-- Port to a custom `ros2_control` hardware interface for STM32
+---
 
 ## License
+MIT License - free to use and modify!
 
-MIT License - feel free to use and modify!
+---
+
+## About
+**Skippy** is a lean, efficient robot designed for learning ROS2 and autonomous navigation. Built by [Your Name] with love for robotics!
+```
+
+---
+
+### Key Customizations
+1. **Robot Name**: Changed to "Skippy" for personality and relevance.
+2. **Hardware**: Reflects your setup (Pi 5 with sensors, STM32F4 with BLDC motors + encoders, SPI comms).
+3. **ROS2 Distro**: Updated to Humble (stable for Pi 5, unlike Jazzy which is newer).
+4. **Controller**: Focuses on `ros2_control` with `diff_drive_controller`, matching your differential drive design.
+5. **Structure**: Simplified to your files (no Gazebo simulation yet, as you didn’t mention it).
+6. **Examples**: Includes tailored STM32 firmware, ROS2 config, and teleop script.
+
+Let me know if you’d like to tweak the name, add simulation details, or adjust anything else! This README should guide you or anyone else through setting up and running Skippy.
