@@ -1,22 +1,17 @@
-Below is a customized README tailored to your specific robot setup, which I’ll call **"Skippy"** (a playful nod to its mobility and your preference to "skip" Micro-ROS). This README reflects your hardware (Raspberry Pi 5 with ROS2, STM32F4 for motor control, BLDC motors with encoders, and sensors on the Pi), incorporates `ros2_control`, and aligns with the differential drive configuration we’ve discussed. I’ve streamlined it for clarity and relevance to your project.
+# Autonomous GOKU: Mobile Robot with ROS2 Jazzy
 
----
-
-```markdown
-# Skippy: Autonomous Mobile Robot with ROS2
-
-**Skippy** is a differential-drive autonomous robot built for indoor navigation, powered by ROS2 Humble on a Raspberry Pi 5 and real-time motor control on an STM32F4. It features BLDC motors with encoders for precise odometry, alongside LiDAR, IMU, and camera sensors for mapping and perception. The robot uses the `ros2_control` framework for seamless integration with ROS2 navigation stacks.
+**Autonomous GOKU** is a powerful differential-drive robot designed for indoor autonomy, powered by ROS2 Jazzy Jalisco on a Raspberry Pi 5 and real-time motor control on an STM32F4. Named after the legendary Saiyan warrior, GOKU combines strength and agility with BLDC motors and encoders for precise odometry, alongside LiDAR, IMU, and camera sensors for advanced perception and navigation. It leverages the `ros2_control` framework for seamless ROS2 integration.
 
 ---
 
 ## Features
 - **Hardware**:
-  - Raspberry Pi 5: ROS2 host, sensor processing (LiDAR, IMU, camera).
-  - STM32F4: BLDC motor control and encoder feedback via SPI.
+  - Raspberry Pi 5: ROS2 host, processes LiDAR, IMU, and camera data.
+  - STM32F4: Controls BLDC motors and reads encoder feedback via SPI.
   - 2 BLDC motors with built-in encoders (differential drive).
-- **Control**: Velocity-based control using `diff_drive_controller` in `ros2_control`.
-- **Sensors**: LiDAR (e.g., RPLIDAR), IMU (e.g., MPU6050), and camera (e.g., USB or CSI) on the Pi.
-- **ROS2 Distro**: Humble Hawksbill (2022).
+- **Control**: Velocity-based control with `diff_drive_controller` in `ros2_control`.
+- **Sensors**: LiDAR (e.g., RPLIDAR), IMU (e.g., MPU6050), camera (e.g., USB/CSI) on the Pi.
+- **ROS2 Distro**: Jazzy Jalisco (May 2024).
 - **Enhancements**:
   - Odometry fusion (encoders + IMU).
   - Teleoperation script for manual control.
@@ -26,26 +21,26 @@ Below is a customized README tailored to your specific robot setup, which I’ll
 
 ## Prerequisites
 ### Hardware
-- Raspberry Pi 5 (Ubuntu 22.04 LTS).
+- Raspberry Pi 5 (Ubuntu 24.04 LTS).
 - STM32F4 (e.g., STM32F407VG Discovery).
-- 2 BLDC motors with encoders and compatible driver (e.g., ESC or custom H-bridge).
+- 2 BLDC motors with encoders and driver (e.g., ESC or H-bridge).
 - SPI connection (Pi GPIO 10/11/9 to STM32 PA5/PA7/PA4).
 - Sensors: LiDAR (USB/UART), IMU (I2C/SPI), camera (USB/CSI).
 
 ### Software
-- ROS2 Humble: `sudo apt install ros-humble-desktop`.
-- `ros2_control` and controllers: `sudo apt install ros-humble-ros2-control ros-humble-ros2-controllers`.
+- ROS2 Jazzy: `sudo apt install ros-jazzy-desktop`.
+- `ros2_control` and controllers: `sudo apt install ros-jazzy-ros2-control ros-jazzy-ros2-controllers`.
 - STM32CubeIDE for firmware development.
 - Python dependencies: `pip install spidev`.
 
 ### Tools
-- Git, CMake, `colcon` for building ROS2 packages.
+- Git, CMake, `colcon` for ROS2 package building.
 
 ---
 
 ## Project Structure
 ```
-skippy_robot/
+autonomous_goku/
 ├── config/                   # Configuration files (e.g., robot_control.yaml)
 ├── launch/                   # Launch files (e.g., robot_control.launch.py)
 ├── src/                      # Source code
@@ -60,13 +55,13 @@ skippy_robot/
 
 ## Setup Instructions
 ### 1. Raspberry Pi 5 Setup
-1. Install Ubuntu 22.04 and ROS2 Humble (see [ROS2 docs](https://docs.ros.org/en/humble/Installation.html)).
+1. Install Ubuntu 24.04 LTS and ROS2 Jazzy (see [ROS2 Jazzy docs](https://docs.ros.org/en/jazzy/Installation.html)).
 2. Enable SPI:
    - Edit `/boot/firmware/config.txt`: Add `dtparam=spi=on`.
    - Reboot: `sudo reboot`.
 3. Clone and build:
    ```bash
-   git clone <repo-url> ~/ros2_ws/src/skippy_robot
+   git clone <repo-url> ~/ros2_ws/src/autonomous_goku
    cd ~/ros2_ws
    colcon build
    source install/setup.bash
@@ -90,7 +85,7 @@ skippy_robot/
 
 ### 4. ROS2 Control Setup
 - Configuration: See `config/robot_control.yaml`.
-- Launch: `ros2 launch skippy_robot robot_control.launch.py`.
+- Launch: `ros2 launch autonomous_goku robot_control.launch.py`.
 
 ---
 
@@ -177,7 +172,7 @@ def generate_launch_description():
         Node(
             package="controller_manager",
             executable="ros2_control_node",
-            parameters=["/path/to/skippy_robot/config/robot_control.yaml"],
+            parameters=["/path/to/autonomous_goku/config/robot_control.yaml"],
             output="screen",
         ),
         Node(
@@ -194,11 +189,11 @@ def generate_launch_description():
 ## Usage
 1. **Launch Control**:
    ```bash
-   ros2 launch skippy_robot robot_control.launch.py
+   ros2 launch autonomous_goku robot_control.launch.py
    ```
 2. **Teleoperation**:
    ```bash
-   ros2 run skippy_robot teleop.py
+   ros2 run autonomous_goku teleop.py
    ```
 3. **Monitor Diagnostics**:
    ```bash
@@ -259,7 +254,7 @@ def main():
 ## Future Enhancements
 - Add PID control on STM32F4 for velocity stabilization.
 - Integrate IMU data into `diff_drive_controller` for better odometry.
-- Support for SLAM (e.g., Cartographer) with LiDAR.
+- Support SLAM (e.g., Cartographer) with LiDAR.
 
 ---
 
@@ -267,19 +262,3 @@ def main():
 MIT License - free to use and modify!
 
 ---
-
-## About
-**Skippy** is a lean, efficient robot designed for learning ROS2 and autonomous navigation. Built by [Your Name] with love for robotics!
-```
-
----
-
-### Key Customizations
-1. **Robot Name**: Changed to "Skippy" for personality and relevance.
-2. **Hardware**: Reflects your setup (Pi 5 with sensors, STM32F4 with BLDC motors + encoders, SPI comms).
-3. **ROS2 Distro**: Updated to Humble (stable for Pi 5, unlike Jazzy which is newer).
-4. **Controller**: Focuses on `ros2_control` with `diff_drive_controller`, matching your differential drive design.
-5. **Structure**: Simplified to your files (no Gazebo simulation yet, as you didn’t mention it).
-6. **Examples**: Includes tailored STM32 firmware, ROS2 config, and teleop script.
-
-Let me know if you’d like to tweak the name, add simulation details, or adjust anything else! This README should guide you or anyone else through setting up and running Skippy.
