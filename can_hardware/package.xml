@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<package format="3">
+  <name>my_can_hardware</name>
+  <version>0.0.1</version>
+  <description>CAN bus hardware interface for ros2_control</description>
+  <maintainer email="cherniyassine395@gmail.com">Yassine cherni</maintainer>
+  <license>Apache-2.0</license>
+
+  <buildtool_depend>ament_cmake</buildtool_depend>
+  <depend>rclcpp</depend>
+  <depend>can_msgs</depend>
+  <depend>std_msgs</depend>
+  <depend>hardware_interface</depend>
+  <depend>pluginlib</depend>
+
+  <export>
+    <build_type>ament_cmake</build_type>
+  </export>
+</package>
