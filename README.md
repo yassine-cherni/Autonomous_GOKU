@@ -1,6 +1,6 @@
-# Autonomous GOKU: Mobile Robot with ROS2 Jazzy
+# Autonomous GOKU: Mobile Robot
 
-**Autonomous GOKU** is a powerful differential-drive robot designed for indoor autonomy, powered by ROS2 Jazzy Jalisco on a Raspberry Pi 5 and real-time motor control on an STM32F4. Named after the legendary Saiyan warrior, GOKU combines strength and agility with BLDC motors and encoders for precise odometry, alongside LiDAR, IMU, and camera sensors for advanced perception and navigation. It leverages the `ros2_control` framework for seamless ROS2 integration.
+**Autonomous GOKU** is a powerful differential-drive robot, powered by ROS2 Jazzy on a Raspberry Pi 5 and real-time motor control on an STM32F4. Named after the legendary Saiyan warrior, GOKU combines strength and agility with BLDC motors and HALL sensors for precise odometry, alongside LiDAR, IMU, and camera sensors for advanced perception and navigation. It leverages the `ros2_control` framework for seamless ROS2 integration.
 
 ---
 
@@ -9,6 +9,7 @@
   - Raspberry Pi 5: ROS2 host, processes LiDAR, IMU, and camera data.
   - STM32F4: Controls BLDC motors and reads encoder feedback via SPI.
   - 2 BLDC motors with built-in encoders (differential drive).
+  - CAN BUS 
 - **Control**: Velocity-based control with `diff_drive_controller` in `ros2_control`.
 - **Sensors**: LiDAR (e.g., RPLIDAR), IMU (e.g., MPU6050), camera (e.g., USB/CSI) on the Pi.
 - **ROS2 Distro**: Jazzy Jalisco (May 2024).
