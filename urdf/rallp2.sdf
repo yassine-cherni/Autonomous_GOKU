@@ -1,0 +1,375 @@
+<sdf version='1.11'>
+  <model name='RALLP_2'>
+    <link name='base_link'>
+      <inertial>
+        <pose>0 0 0 0 0 0</pose>
+        <mass>45</mass>
+        <inertia>
+          <ixx>1.53975</ixx>
+          <ixy>0</ixy>
+          <ixz>0</ixz>
+          <iyy>2.6343749999999999</iyy>
+          <iyz>0</iyz>
+          <izz>3.7053750000000001</izz>
+        </inertia>
+      </inertial>
+      <collision name='base_link_collision'>
+        <pose>0 0 0 0 0 0</pose>
+        <geometry>
+          <box>
+            <size>0.80000000000000004 0.58999999999999997 0.25</size>
+          </box>
+        </geometry>
+      </collision>
+      <collision name='base_link_fixed_joint_lump__lidar_link_collision_1'>
+        <pose>0.14999999999999999 0 0.14999999999999999 0 0 0</pose>
+        <geometry>
+          <cylinder>
+            <length>0.050000000000000003</length>
+            <radius>0.059999999999999998</radius>
+          </cylinder>
+        </geometry>
+      </collision>
+      <visual name='base_link_visual'>
+        <pose>0 0 0 0 0 0</pose>
+        <geometry>
+          <box>
+            <size>0.80000000000000004 0.58999999999999997 0.25</size>
+          </box>
+        </geometry>
+        <material>
+          <diffuse>0 1 1 1</diffuse>
+          <ambient>0 1 1 1</ambient>
+        </material>
+      </visual>
+      <visual name='base_link_fixed_joint_lump__lidar_link_visual_1'>
+        <pose>0.14999999999999999 0 0.14999999999999999 0 0 0</pose>
+        <geometry>
+          <cylinder>
+            <length>0.050000000000000003</length>
+            <radius>0.059999999999999998</radius>
+          </cylinder>
+        </geometry>
+        <material>
+          <diffuse>1 0 0 1</diffuse>
+          <ambient>1 0 0 1</ambient>
+        </material>
+      </visual>
+    </link>
+    <joint name='fl_joint' type='revolute'>
+      <pose relative_to='base_link'>0.2205 0.29499999999999998 -0.074147000000000005 0 0 0</pose>
+      <parent>base_link</parent>
+      <child>fl_link</child>
+      <axis>
+        <xyz>0 1 0</xyz>
+        <limit>
+          <lower>-inf</lower>
+          <upper>inf</upper>
+        </limit>
+        <dynamics>
+          <damping>0</damping>
+          <friction>1000</friction>
+          <spring_reference>0</spring_reference>
+          <spring_stiffness>0</spring_stiffness>
+        </dynamics>
+      </axis>
+    </joint>
+    <link name='fl_link'>
+      <pose relative_to='fl_joint'>0 0 0 0 0 0</pose>
+      <inertial>
+        <pose>0 0.050000000000000003 0 0 0 0</pose>
+        <mass>1.5</mass>
+        <inertia>
+          <ixx>0.0096874999999999999</ixx>
+          <ixy>0</ixy>
+          <ixz>0</ixz>
+          <iyy>0.016875000000000001</iyy>
+          <iyz>0</iyz>
+          <izz>0.0096874999999999999</izz>
+        </inertia>
+      </inertial>
+      <collision name='fl_link_collision'>
+        <pose>0 0.050000000000000003 0 1.5707963270000003 0 0</pose>
+        <geometry>
+          <cylinder>
+            <length>0.10000000000000001</length>
+            <radius>0.14999999999999999</radius>
+          </cylinder>
+        </geometry>
+      </collision>
+      <visual name='fl_link_visual'>
+        <pose>0 0.050000000000000003 0 1.5707963270000003 0 0</pose>
+        <geometry>
+          <cylinder>
+            <length>0.10000000000000001</length>
+            <radius>0.14999999999999999</radius>
+          </cylinder>
+        </geometry>
+        <material>
+          <diffuse>0.625 0.625 0.625 1</diffuse>
+          <ambient>0.625 0.625 0.625 1</ambient>
+        </material>
+      </visual>
+    </link>
+    <joint name='fr_joint' type='revolute'>
+      <pose relative_to='base_link'>0.2205 -0.29499999999999998 -0.074147000000000005 0 0 0</pose>
+      <parent>base_link</parent>
+      <child>fr_link</child>
+      <axis>
+        <xyz>0 1 0</xyz>
+        <limit>
+          <lower>-inf</lower>
+          <upper>inf</upper>
+        </limit>
+        <dynamics>
+          <damping>0</damping>
+          <friction>1000</friction>
+          <spring_reference>0</spring_reference>
+          <spring_stiffness>0</spring_stiffness>
+        </dynamics>
+      </axis>
+    </joint>
+    <link name='fr_link'>
+      <pose relative_to='fr_joint'>0 0 0 0 0 0</pose>
+      <inertial>
+        <pose>0 -0.050000000000000003 0 0 0 0</pose>
+        <mass>1.5</mass>
+        <inertia>
+          <ixx>0.0096874999999999999</ixx>
+          <ixy>0</ixy>
+          <ixz>0</ixz>
+          <iyy>0.016875000000000001</iyy>
+          <iyz>0</iyz>
+          <izz>0.0096874999999999999</izz>
+        </inertia>
+      </inertial>
+      <collision name='fr_link_collision'>
+        <pose>0 -0.050000000000000003 0 -1.5707959999999999 0 0</pose>
+        <geometry>
+          <cylinder>
+            <length>0.10000000000000001</length>
+            <radius>0.14999999999999999</radius>
+          </cylinder>
+        </geometry>
+      </collision>
+      <visual name='fr_link_visual'>
+        <pose>0 -0.050000000000000003 0 -1.5707959999999999 0 0</pose>
+        <geometry>
+          <cylinder>
+            <length>0.10000000000000001</length>
+            <radius>0.14999999999999999</radius>
+          </cylinder>
+        </geometry>
+        <material>
+          <diffuse>0.625 0.625 0.625 1</diffuse>
+          <ambient>0.625 0.625 0.625 1</ambient>
+        </material>
+      </visual>
+    </link>
+    <joint name='rl_joint' type='revolute'>
+      <pose relative_to='base_link'>-0.26950000000000002 0.29499999999999998 -0.074147000000000005 0 0 0</pose>
+      <parent>base_link</parent>
+      <child>drivewhl_rl_link</child>
+      <axis>
+        <xyz>0 1 0</xyz>
+        <limit>
+          <lower>-inf</lower>
+          <upper>inf</upper>
+        </limit>
+        <dynamics>
+          <damping>0</damping>
+          <friction>1000</friction>
+          <spring_reference>0</spring_reference>
+          <spring_stiffness>0</spring_stiffness>
+        </dynamics>
+      </axis>
+    </joint>
+    <link name='drivewhl_rl_link'>
+      <pose relative_to='rl_joint'>0 0 0 0 0 0</pose>
+      <inertial>
+        <pose>0 0.050000000000000003 0 0 0 0</pose>
+        <mass>1.5</mass>
+        <inertia>
+          <ixx>0.0096874999999999999</ixx>
+          <ixy>0</ixy>
+          <ixz>0</ixz>
+          <iyy>0.016875000000000001</iyy>
+          <iyz>0</iyz>
+          <izz>0.0096874999999999999</izz>
+        </inertia>
+      </inertial>
+      <collision name='drivewhl_rl_link_collision'>
+        <pose>0 0.050000000000000003 0 1.5707963270000003 0 0</pose>
+        <geometry>
+          <cylinder>
+            <length>0.10000000000000001</length>
+            <radius>0.14999999999999999</radius>
+          </cylinder>
+        </geometry>
+      </collision>
+      <visual name='drivewhl_rl_link_visual'>
+        <pose>0 0.050000000000000003 0 1.5707963270000003 0 0</pose>
+        <geometry>
+          <cylinder>
+            <length>0.10000000000000001</length>
+            <radius>0.14999999999999999</radius>
+          </cylinder>
+        </geometry>
+        <material>
+          <diffuse>0.625 0.625 0.625 1</diffuse>
+          <ambient>0.625 0.625 0.625 1</ambient>
+        </material>
+      </visual>
+    </link>
+    <joint name='rr_joint' type='revolute'>
+      <pose relative_to='base_link'>-0.26950000000000002 -0.29499999999999998 -0.074147000000000005 -3.0621795865888462e-06 0 0</pose>
+      <parent>base_link</parent>
+      <child>rr_link</child>
+      <axis>
+        <xyz>0 1 0</xyz>
+        <limit>
+          <lower>-inf</lower>
+          <upper>inf</upper>
+        </limit>
+        <dynamics>
+          <damping>0</damping>
+          <friction>1000</friction>
+          <spring_reference>0</spring_reference>
+          <spring_stiffness>0</spring_stiffness>
+        </dynamics>
+      </axis>
+    </joint>
+    <link name='rr_link'>
+      <pose relative_to='rr_joint'>0 0 0 0 0 0</pose>
+      <inertial>
+        <pose>0 -0.050000000000000003 0 0 0 0</pose>
+        <mass>1.5</mass>
+        <inertia>
+          <ixx>0.0096874999999999999</ixx>
+          <ixy>0</ixy>
+          <ixz>0</ixz>
+          <iyy>0.016875000000000001</iyy>
+          <iyz>0</iyz>
+          <izz>0.0096874999999999999</izz>
+        </inertia>
+      </inertial>
+      <collision name='rr_link_collision'>
+        <pose>0 -0.050000000000000003 0 -1.5707963270000003 0 0</pose>
+        <geometry>
+          <cylinder>
+            <length>0.10000000000000001</length>
+            <radius>0.14999999999999999</radius>
+          </cylinder>
+        </geometry>
+      </collision>
+      <visual name='rr_link_visual'>
+        <pose>0 -0.050000000000000003 0 -1.5707963270000003 0 0</pose>
+        <geometry>
+          <cylinder>
+            <length>0.10000000000000001</length>
+            <radius>0.14999999999999999</radius>
+          </cylinder>
+        </geometry>
+        <material>
+          <diffuse>0.625 0.625 0.625 1</diffuse>
+          <ambient>0.625 0.625 0.625 1</ambient>
+        </material>
+      </visual>
+    </link>
+    <plugin name='gz::sim::systems::DiffDrive' filename='gz-sim-diff-drive-system'>
+      <left_joint>fl_joint</left_joint>
+      <left_joint>rl_joint</left_joint>
+      <right_joint>fr_joint</right_joint>
+      <right_joint>rr_joint</right_joint>
+      <robotBaseFrame>base_link</robotBaseFrame>
+      <wheel_separation>0.6</wheel_separation>
+      <wheel_radius>0.15</wheel_radius>
+      <odom_topic>odom</odom_topic>
+      <frame_id>odom</frame_id>
+      <child_frame_id>base_link</child_frame_id>
+      <odom_publisher_frequency>100</odom_publisher_frequency>
+      <tf_topic>/tf</tf_topic>
+      <topic>cmd_vel</topic>
+    </plugin>
+    <plugin name='gz::sim::systems::TriggeredPublisher' filename='gz-sim-triggered-publisher-system'>
+      <input type='gz.msgs.Int32' topic='/keyboard/keypress'>
+        <match field='data'>87</match>
+      </input>
+      <output type='gz.msgs.Twist' topic='/cmd_vel'>linear: {x: 2}, angular: {z: 0.0}</output>
+    </plugin>
+    <plugin name='gz::sim::systems::TriggeredPublisher' filename='gz-sim-triggered-publisher-system'>
+      <input type='gz.msgs.Int32' topic='/keyboard/keypress'>
+        <match field='data'>83</match>
+      </input>
+      <output type='gz.msgs.Twist' topic='/cmd_vel'>linear: {x: -2}, angular: {z: 0.0}</output>
+    </plugin>
+    <plugin name='gz::sim::systems::TriggeredPublisher' filename='gz-sim-triggered-publisher-system'>
+      <input type='gz.msgs.Int32' topic='/keyboard/keypress'>
+        <match field='data'>65</match>
+      </input>
+      <output type='gz.msgs.Twist' topic='/cmd_vel'>linear: {x: 0.0}, angular: {z: 2}</output>
+    </plugin>
+    <plugin name='gz::sim::systems::TriggeredPublisher' filename='gz-sim-triggered-publisher-system'>
+      <input type='gz.msgs.Int32' topic='/keyboard/keypress'>
+        <match field='data'>68</match>
+      </input>
+      <output type='gz.msgs.Twist' topic='/cmd_vel'>linear: {x: 0.0}, angular: {z: -2}</output>
+    </plugin>
+    <plugin name='gz::sim::systems::TriggeredPublisher' filename='gz-sim-triggered-publisher-system'>
+      <input type='gz.msgs.Int32' topic='/keyboard/keypress'>
+        <match field='data'>70</match>
+      </input>
+      <output type='gz.msgs.Twist' topic='/cmd_vel'>linear: {x: 0.0}, angular: {z: 0.0}</output>
+    </plugin>
+    <plugin name='gz::sim::systems::JointStatePublisher' filename='gz-sim-joint-state-publisher-system'>
+      <topic>joint_states</topic>
+      <joint_name>fl_joint</joint_name>
+      <joint_name>fr_joint</joint_name>
+      <joint_name>rl_joint</joint_name>
+      <joint_name>rr_joint</joint_name>
+    </plugin>
+    <plugin name='gz::sim::systems::Sensors' filename='gz-sim-sensors-system'>
+      <render_engine>ogre2</render_engine>
+    </plugin>
+    <frame name='base_joint' attached_to='base_link'>
+      <pose>0 0 -0.200853 0 0 0</pose>
+    </frame>
+    <frame name='base_footprint' attached_to='base_joint'>
+      <pose>0 0 0 0 0 0</pose>
+    </frame>
+    <frame name='lidar_joint' attached_to='base_link'>
+      <pose>0.14999999999999999 0 0.14999999999999999 0 0 0</pose>
+    </frame>
+    <frame name='lidar_link' attached_to='lidar_joint'>
+      <pose>0 0 0 0 0 0</pose>
+    </frame>
+    <sensor name='gpu_lidar' type='gpu_lidar'>
+      <pose relative_to='lidar_link'>0 0 0 0 0 0</pose>
+      <topic>scan</topic>
+      <update_rate>10</update_rate>
+      <ray>
+        <scan>
+          <horizontal>
+            <samples>640</samples>
+            <resolution>1</resolution>
+            <min_angle>-1.396263</min_angle>
+            <max_angle>1.396263</max_angle>
+          </horizontal>
+          <vertical>
+            <samples>1</samples>
+            <resolution>0.01</resolution>
+            <min_angle>0</min_angle>
+            <max_angle>0</max_angle>
+          </vertical>
+        </scan>
+        <range>
+          <min>0.08</min>
+          <max>10.0</max>
+          <resolution>0.01</resolution>
+        </range>
+      </ray>
+      <always_on>1</always_on>
+      <visualize>true</visualize>
+    </sensor>
+  </model>
+</sdf>

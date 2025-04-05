@@ -1,0 +1,36 @@
+<?xml version="1.0"?>
+<robot name="RALLP_2" xmlns:xacro="http://www.ros.org/wiki/xacro">
+  <gazebo>
+    <plugin filename="gz-sim-sensors-system" name="gz::sim::systems::Sensors">
+      <render_engine>ogre2</render_engine>
+    </plugin>
+  </gazebo>
+
+  <!-- Includes -->
+  <xacro:include filename="$(find rallp)/urdf2/robot_core.xacro"/>
+  <xacro:include filename="$(find rallp)/urdf2/inertial_macros.xacro"/>
+  <xacro:include filename="$(find rallp)/urdf2/lidar.xacro"/>
+  <xacro:include filename="$(find rallp)/urdf2/camera.xacro"/>
+  <xacro:include filename="$(find rallp)/urdf2/gazebo_control.xacro"/>
+  <xacro:include filename="$(find rallp)/urdf2/ros2_control.xacro"/> 
+
+  <!-- Define properties -->
+  <xacro:property name="base_mesh_path" value="file:///home/ahmed-jeljli/rallp_v2.1/src/rallp/meshes/DAE"/>
+  <xacro:property name="wheel_scale" value="1.5 1.5 1.5"/>
+  <!-- Main robot structure -->
+  <xacro:robot_core 
+    base_mesh="${base_mesh_path}/base/base_link.dae"
+    wheel_mesh_path="${base_mesh_path}/wheel"/>
+
+  <!-- Sensors -->
+  <xacro:lidar_sensor/>
+
+  <!-- Gazebo plugins -->
+  <!-- No need to call a macro here, as gazebo_control.xacro directly defines plugins -->
+
+
+  <!-- ROS 2 Control -->
+  <xacro:ros2_control/> <!-- Call the ROS 2 Control macro -->
+
+  
+</robot>
