@@ -1,0 +1,5 @@
+<library path="my_can_hardware">
+  <class name="my_can_hardware/CanHardwareInterface" type="CanHardwareInterface" base_class_type="hardware_interface::SystemInterface">
+    <description>CAN bus hardware interface for ros2_control</description>
+  </class>
+</library>
